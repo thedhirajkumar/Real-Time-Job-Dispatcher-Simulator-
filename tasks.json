@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "windows": {
+    "options": {
+      "shell": {
+        "executable": "C:\\Windows\\System32\\cmd.exe",
+        "args": ["/d", "/c"]
+      }
+    }
+  },
+  "tasks": [
+    {
+      "label": "Build Dispatcher",
+      "type": "shell",
+      "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-std=c++17",
+        "-O2",
+        "\"${workspaceFolder}\\dispatcher.cpp\"",
+        "-o",
+        "\"${workspaceFolder}\\bin\\dispatcher.exe\"",
+        "-IC:\\msys64\\mingw64\\include",
+        "-LC:\\msys64\\mingw64\\lib",
+        "-lsqlite3",
+        "-static-libgcc",
+        "-static-libstdc++"
+      ],
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Copy SQLite DLL",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "Copy-Item \"C:/msys64/mingw64/bin/sqlite3.dll\" \"${workspaceFolder}/bin/\" -Force"
+      ]
+    },
+    {
+      "label": "Build+Prepare",
+      "dependsOn": ["Build Dispatcher", "Copy SQLite DLL"]
+    }
+  ]
+}
